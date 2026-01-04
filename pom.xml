@@ -8,7 +8,7 @@
 		<version>3.5.9</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.ironman</groupId>
+	<groupId>com.ironman.borrower</groupId>
 	<artifactId>reactive-service-borrower</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>reactive-service-borrower</name>
@@ -16,12 +16,33 @@
 
 	<properties>
 		<java.version>17</java.version>
+		<openapi-generator.version>7.15.0</openapi-generator.version>
 	</properties>
 	<dependencies>
 		<!-- RESTful API -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+
+		<!-- Bean Validation -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+		<!-- OpenAPI Generator Dependencies -->
+		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>jackson-databind-nullable</artifactId>
+			<version>0.2.8</version>
+		</dependency>
+
+		<!-- OpenAPI UI Dependency -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
+			<version>2.8.13</version>
 		</dependency>
 
 		<!-- Testing -->
@@ -42,6 +63,41 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>${openapi-generator.version}</version>
+				<executions>
+						<execution>
+							<goals>
+								<goal>generate</goal>
+							</goals>
+							<configuration>
+								<inputSpec>${project.basedir}/src/main/resources/openapi/openapi.yml</inputSpec>
+								<generatorName>spring</generatorName>
+								<apiPackage>${project.groupId}.controller</apiPackage>
+								<modelPackage>${project.groupId}.dto</modelPackage>
+								<supportingFilesToGenerate>
+									ApiUtil.java,
+									RFC3339DateFormat.java,
+									HomeController.java
+								</supportingFilesToGenerate>
+
+								<configOptions>
+									<useSpringBoot3>true</useSpringBoot3>
+									<dateLibrary>java8-localdatetime</dateLibrary>
+									<useJakartaEe>true</useJakartaEe>
+									<openApiNullable>false</openApiNullable>
+									<delegatePattern>true</delegatePattern>
+									<reactive>true</reactive>
+									<library>spring-boot</library>
+								</configOptions>
+
+							</configuration>
+						</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
